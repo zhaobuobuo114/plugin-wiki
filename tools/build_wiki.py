@@ -31,18 +31,29 @@ def load_site() -> dict:
         return json.load(fh)
 
 
-def flatten(site: dict):
-    """Return ordered list of (group, item) plus alias map."""
-    flat = []
+def collect(site: dict):
+    """Build a flat page list; plugin pages live under each plugin."""
+    pages = []
     alias = {}
     for group in site["groups"]:
         for item in group["items"]:
-            flat.append((group, item))
+            page = dict(item)
+            page["group"] = group["title"]
+            page["plugin"] = None
+            pages.append(page)
             alias[item["title"]] = item["slug"]
             alias[Path(item["source"]).stem] = item["slug"]
             for name in item.get("alias", []):
-                alias[name] = item["slug"]
-    return flat, alias
+                alias.setdefault(name, item["slug"])
+    for plugin in site.get("plugins", []):
+        for item in plugin["pages"]:
+            page = dict(item)
+            page["group"] = plugin["fullName"]
+            page["plugin"] = plugin
+            pages.append(page)
+            for name in [item["title"], Path(item["source"]).stem] + item.get("alias", []):
+                alias.setdefault(name, item["slug"])
+    return pages, alias
 
 
 LINK_RE = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)\s]+)\)")
@@ -89,40 +100,23 @@ def build_toc(tokens, level: int = 0) -> str:
 def render_nav(site: dict, active_slug: str, root: str) -> str:
     out = []
     for group in site["groups"]:
-        items = group["items"]
-        is_open = group.get("open", False) or any(it["slug"] == active_slug for it in items)
-        badge = group.get("badge")
-        badge_html = f'<span class="nav-badge">{escape(badge)}</span>' if badge else ""
-
-        if group.get("collapsible"):
-            out.append(
-                f'<details class="nav-group nav-collapse"{" open" if is_open else ""}>'
-            )
-            out.append(
-                f'<summary class="nav-title">{escape(group["title"])}{badge_html}'
-                '<svg class="nav-chevron" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">'
-                '<path d="M5 6l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" '
-                'stroke-linecap="round" stroke-linejoin="round"/></svg></summary>'
-            )
-        else:
-            out.append('<div class="nav-group">')
-            out.append(f'<div class="nav-title">{escape(group["title"])}{badge_html}</div>')
-
+        out.append('<div class="nav-group">')
+        out.append(f'<div class="nav-title">{escape(group["title"])}</div>')
         out.append('<ul class="nav-items">')
-        for item in items:
+        for item in group["items"]:
             cls = "nav-link is-active" if item["slug"] == active_slug else "nav-link"
             out.append(
                 f'<li><a class="{cls}" href="{root}{item["slug"]}">{escape(item["title"])}</a></li>'
             )
-        out.append("</ul>")
-
-        out.append("</details>" if group.get("collapsible") else "</div>")
+        out.append("</ul></div>")
     return "\n".join(out)
 
 
 def render_stats(site: dict) -> str:
     plugins = site.get("plugins") or []
-    page_count = sum(len(g["items"]) for g in site["groups"])
+    page_count = sum(len(p["pages"]) for p in plugins) + sum(
+        len(g["items"]) for g in site["groups"]
+    )
     latest = max((p.get("updated", "") for p in plugins), default="")
     stats = [
         (str(len(plugins)), "个插件"),
@@ -136,37 +130,52 @@ def render_stats(site: dict) -> str:
     return f'<div class="stat-row">{cells}</div>'
 
 
-def render_cards(site: dict, root: str, limit: int | None = None) -> str:
+def render_plugin_blocks(site: dict, root: str, limit: int | None = None) -> str:
     plugins = list(site.get("plugins") or [])
     if limit:
         plugins = plugins[:limit]
-    cards = []
+    blocks = []
     for p in plugins:
         status = p.get("status", "stable")
         tags = "".join(
             f'<span class="pc-tag">{escape(t)}</span>' for t in p.get("tags", [])
         )
+        docs = "".join(
+            f'<a class="pb-doc" href="{root}{escape(pg["slug"])}">{escape(pg["title"])}'
+            '<span aria-hidden="true">→</span></a>'
+            for pg in p["pages"]
+        )
         haystack = " ".join(
             [p.get("name", ""), p.get("fullName", ""), p.get("summary", "")] + p.get("tags", [])
         )
-        cards.append(
-            f'<article class="plugin-card" data-text="{escape(haystack.lower())}">'
-            '<div class="pc-top">'
-            f'<div class="pc-name">{escape(p.get("name", ""))}'
-            f'<span class="pc-ver">{escape(p.get("version", ""))}</span></div>'
-            f'<span class="pc-status is-{escape(status)}">{escape(STATUS_TEXT.get(status, status))}</span>'
-            "</div>"
-            f'<p class="pc-desc">{escape(p.get("summary", ""))}</p>'
-            f'<div class="pc-tags"><span class="pc-tag pc-tag-mc">{escape(p.get("mc", ""))}</span>{tags}</div>'
-            '<div class="pc-actions">'
-            f'<a class="pc-btn" href="{root}{escape(p.get("docs", ""))}">查看文档</a>'
+        actions = (
+            f'<a class="pc-btn" href="{root}{escape(p["pages"][0]["slug"])}">开始阅读</a>'
+        )
+        if p.get("repo"):
+            actions += (
+                f'<a class="pc-btn pc-btn-ghost" href="{escape(p["repo"])}" '
+                'target="_blank" rel="noopener">源码</a>'
+            )
+        actions += (
             f'<a class="pc-btn pc-btn-ghost" href="{escape(p.get("download", ""))}" '
             'target="_blank" rel="noopener">下载</a>'
-            "</div></article>"
         )
-    if not cards:
+        blocks.append(
+            f'<article class="plugin-block" data-text="{escape(haystack.lower())}">'
+            '<div class="pb-head"><div>'
+            f'<h3 class="pb-title">{escape(p.get("name", ""))}'
+            f'<span class="pb-ver">{escape(p.get("version", ""))}</span>'
+            f'<span class="pc-status is-{escape(status)}">{escape(STATUS_TEXT.get(status, status))}</span>'
+            "</h3>"
+            f'<p class="pb-desc">{escape(p.get("summary", ""))}</p>'
+            f'<div class="pc-tags"><span class="pc-tag pc-tag-mc">Minecraft {escape(p.get("mc", ""))}</span>{tags}</div>'
+            f'</div><div class="pb-actions">{actions}</div></div>'
+            f'<div class="pb-docs">{docs}</div>'
+            "</article>"
+        )
+    if not blocks:
         return '<div class="plugin-empty">还没有上架的插件。</div>'
-    return f'<div class="plugin-grid">{"".join(cards)}</div>'
+    return "".join(blocks)
 
 
 def render_filter() -> str:
@@ -184,30 +193,61 @@ def render_meta(site: dict, plugin_id: str) -> str:
     if not plugin:
         return ""
     status = plugin.get("status", "stable")
-    return (
-        '<div class="meta-bar">'
+    chips = (
         f'<span class="meta-chip"><b>版本</b>{escape(plugin.get("version", ""))}</span>'
         f'<span class="meta-chip"><b>适用</b>Minecraft {escape(plugin.get("mc", ""))}</span>'
         f'<span class="meta-chip"><b>状态</b>{escape(STATUS_TEXT.get(status, status))}</span>'
         f'<span class="meta-chip"><b>更新</b>{escape(plugin.get("updated", ""))}</span>'
-        + (
+    )
+    if plugin.get("repo"):
+        chips += (
             f'<a class="meta-chip meta-chip-link" href="{escape(plugin["repo"])}" '
             'target="_blank" rel="noopener">源码</a>'
-            if plugin.get("repo") else ""
         )
-        + f'<a class="meta-chip meta-chip-link" href="{escape(plugin.get("download", ""))}" '
+    chips += (
+        f'<a class="meta-chip meta-chip-link" href="{escape(plugin.get("download", ""))}" '
         'target="_blank" rel="noopener">下载 jar</a>'
-        "</div>"
     )
+    return f'<div class="meta-bar">{chips}</div>'
+
+
+def render_tabs(plugin: dict | None, active_slug: str, root: str) -> str:
+    if not plugin:
+        return ""
+    tabs = []
+    for page in plugin["pages"]:
+        cls = "ptab is-active" if page["slug"] == active_slug else "ptab"
+        tabs.append(
+            f'<a class="{cls}" href="{root}{page["slug"]}">'
+            f'{escape(page.get("short", page["title"]))}</a>'
+        )
+    return f'<nav class="plugin-tabs">{"".join(tabs)}</nav>'
+
+
+def render_crumb(page: dict, root: str) -> str:
+    parts = [f'<a href="{root}index.html">首页</a>']
+    plugin = page.get("plugin")
+    if plugin:
+        parts.append(f'<span class="sep">/</span><a href="{root}plugins.html">插件库</a>')
+        parts.append(f'<span class="sep">/</span><span>{escape(plugin["fullName"])}</span>')
+        parts.append(f'<span class="sep">/</span><span class="cur">{escape(page["title"])}</span>')
+        return "".join(parts)
+    if page["slug"] != "index.html":
+        if page["group"] != "开始":
+            parts.append(f'<span class="sep">/</span><span>{escape(page["group"])}</span>')
+        parts.append(f'<span class="sep">/</span><span class="cur">{escape(page["title"])}</span>')
+    return "".join(parts)
 
 
 def apply_placeholders(text: str, site: dict, root: str) -> str:
     if "[[STATS]]" in text:
         text = text.replace("[[STATS]]", "\n\n" + render_stats(site) + "\n\n")
     if "[[PLUGINS_TOP]]" in text:
-        text = text.replace("[[PLUGINS_TOP]]", "\n\n" + render_cards(site, root, limit=3) + "\n\n")
+        text = text.replace(
+            "[[PLUGINS_TOP]]", "\n\n" + render_plugin_blocks(site, root, 3) + "\n\n"
+        )
     if "[[PLUGINS]]" in text:
-        block = render_filter() + render_cards(site, root)
+        block = render_filter() + render_plugin_blocks(site, root)
         text = text.replace("[[PLUGINS]]", "\n\n" + block + "\n\n")
     for match in set(re.findall(r"\[\[META:([a-z0-9_-]+)\]\]", text)):
         text = text.replace(f"[[META:{match}]]", "\n\n" + render_meta(site, match) + "\n\n")
@@ -251,13 +291,13 @@ PAGE_TMPL = """<!DOCTYPE html>
     <nav class="nav">{nav}</nav>
     <div class="sidebar-foot">
       <a class="btn-download" href="{root}custom.html">插件定制</a>
-      <div class="sidebar-contact">定制 QQ {qq}</div>
+      <div class="sidebar-contact">QQ {qq}</div>
     </div>
   </aside>
   <main class="main">
     <div class="crumb">{crumb}</div>
+    {tabs}
     <article class="markdown">{content}</article>
-    <nav class="pager">{pager}</nav>
     <footer class="pagefoot">
       <div>承接所有版本 Minecraft 服务端插件定制 · 需求直说，工期和报价也直说</div>
       <div>QQ <a href="https://wpa.qq.com/msgrd?v=3&uin={qq}&site=qq&menu=yes" target="_blank" rel="noopener">{qq}</a> · 邮箱 <a href="mailto:{email}">{email}</a></div>
@@ -286,7 +326,7 @@ PAGE_TMPL = """<!DOCTYPE html>
 
 def main() -> int:
     site = load_site()
-    flat, alias = flatten(site)
+    pages, alias = collect(site)
 
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -294,17 +334,16 @@ def main() -> int:
     shutil.copytree(SRC / "assets", OUT / "assets")
 
     index = []
-    total = len(flat)
 
-    for pos, (group, item) in enumerate(flat):
-        src_file = PAGES / item["source"]
+    for page in pages:
+        src_file = PAGES / page["source"]
         if not src_file.exists():
             print(f"[missing] {src_file}")
             return 1
         raw = src_file.read_text(encoding="utf-8")
-        raw = rewrite_links(raw, item["slug"], alias)
+        raw = rewrite_links(raw, page["slug"], alias)
 
-        slug = item["slug"]
+        slug = page["slug"]
         depth = len(posixpath.dirname(slug).split("/")) if posixpath.dirname(slug) else 0
         root = "../" * depth
 
@@ -327,47 +366,22 @@ def main() -> int:
         )
         toc_html = build_toc(md.toc_tokens)
 
-        crumb_parts = [f'<a href="{root}index.html">文档中心</a>']
-        if group["title"] != "开始":
-            crumb_parts.append(
-                f'<span class="sep">/</span><span>{escape(group["title"])}</span>'
-            )
-        if not (item["slug"] == "index.html" and group["title"] == "开始"):
-            crumb_parts.append(
-                f'<span class="sep">/</span><span class="cur">{escape(item["title"])}</span>'
-            )
-        crumb = "".join(crumb_parts)
-
-        pager = []
-        if pos > 0:
-            prev_item = flat[pos - 1][1]
-            pager.append(
-                f'<a class="pager-prev" href="{root}{prev_item["slug"]}">'
-                f'<span>上一页</span><strong>{escape(prev_item["title"])}</strong></a>'
-            )
-        if pos + 1 < total:
-            next_item = flat[pos + 1][1]
-            pager.append(
-                f'<a class="pager-next" href="{root}{next_item["slug"]}">'
-                f'<span>下一页</span><strong>{escape(next_item["title"])}</strong></a>'
-            )
-
-        page_title = item["title"]
-        if group.get("prefix"):
-            page_title = f'{group["prefix"]} · {item["title"]}'
+        page_title = page["title"]
+        if page.get("plugin"):
+            page_title = f'{page["plugin"]["name"]} · {page_title}'
 
         html_out = PAGE_TMPL.format(
             root=root,
             title=escape(page_title),
             site_title=escape(site["siteTitle"]),
-            desc=escape(item.get("desc", site["description"])),
+            desc=escape(page.get("desc", site["description"])),
             repo=site["repo"],
             qq=site["qq"],
             email=site["email"],
             nav=render_nav(site, slug, root),
-            crumb=crumb,
+            crumb=render_crumb(page, root),
+            tabs=render_tabs(page.get("plugin"), slug, root),
             content=body,
-            pager="".join(pager),
             toc=toc_html or '<div class="toc-empty">本页暂无小标题</div>',
         )
 
@@ -377,9 +391,9 @@ def main() -> int:
 
         index.append(
             {
-                "t": item["title"],
+                "t": page["title"],
                 "u": slug,
-                "g": group["title"],
+                "g": page["group"],
                 "x": plain_text(raw)[:1200],
             }
         )
@@ -389,7 +403,7 @@ def main() -> int:
         json.dumps(index, ensure_ascii=False), encoding="utf-8"
     )
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
-    print(f"[done] {total} pages")
+    print(f"[done] {len(pages)} pages")
     return 0
 
 

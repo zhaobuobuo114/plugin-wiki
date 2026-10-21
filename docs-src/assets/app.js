@@ -91,7 +91,7 @@
   var filterInput = document.getElementById("pluginFilter");
   if (filterInput) {
     var cards = Array.prototype.slice.call(
-      document.querySelectorAll(".plugin-card")
+      document.querySelectorAll(".plugin-block")
     );
     var countEl = document.getElementById("pluginCount");
     var applyFilter = function () {
