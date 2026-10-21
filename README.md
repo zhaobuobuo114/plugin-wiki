@@ -33,7 +33,6 @@ wiki/                       VitePress 源文件
 ├─ index.md                 首页
 ├─ plugins.md               插件库
 ├─ custom.md                插件定制
-├─ maintain.md              维护指南
 └─ qiantao/                 每个插件一个目录
 
 docs/                       构建产物（GitHub Pages 发布目录）
@@ -55,7 +54,6 @@ npm run preview   # 预览构建结果
 3. 在 `wiki/.vitepress/config.mts` 的 `sidebar` 加一个 `'/<id>/'` 分组
 4. `npm run build`，提交 `wiki/` 与 `docs/`
 
-详细字段说明见站内「文档维护指南」。
 
 ## 发布
 

@@ -17,8 +17,7 @@ export default defineConfig({
     siteTitle: '插件文档中心',
     nav: [
       { text: '插件库', link: '/plugins' },
-      { text: '插件定制', link: '/custom' },
-      { text: '维护指南', link: '/maintain' }
+      { text: '插件定制', link: '/custom' }
     ],
     sidebar: {
       '/qiantao/': [
