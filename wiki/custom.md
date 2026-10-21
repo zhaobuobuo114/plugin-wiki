@@ -45,7 +45,7 @@ title: 插件定制
 
 ## 已有成品
 
-- [QianDao 签到插件](/qiantao/) — 七日周期 / 补签卡 / 排行榜 / 经济联动，Minecraft 1.12.2
+- [\[klkhk\]plugin_qiandao_1.12.2](/qiantao/) — 七日周期 / 补签卡 / 排行榜 / 经济联动，Minecraft 1.12.2
 
 ## 联系方式
 

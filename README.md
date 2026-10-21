@@ -17,7 +17,7 @@ Minecraft 服务端插件的文档总站。**只放文档，不放插件源码**
 
 | 插件 | 适用版本 | 版本 | 文档 |
 | --- | --- | --- | --- |
-| QianDao 签到插件 | 1.12.2 | v1.1.4 | [查看](https://zhaobuobuo114.github.io/plugin-wiki/qiantao/) |
+| [klkhk]plugin_qiandao_1.12.2 | 1.12.2 | v1.1.4 | [查看](https://zhaobuobuo114.github.io/plugin-wiki/qiantao/) |
 
 ## 仓库结构
 

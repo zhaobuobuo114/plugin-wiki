@@ -23,7 +23,7 @@ export default defineConfig({
     sidebar: {
       '/qiantao/': [
         {
-          text: 'QianDao 签到插件',
+          text: '[klkhk]plugin_qiandao_1.12.2',
           items: [
             { text: '插件介绍', link: '/qiantao/' },
             { text: '安装部署', link: '/qiantao/install' },

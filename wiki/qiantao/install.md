@@ -2,7 +2,7 @@
 title: 安装部署
 ---
 
-# QianDao · 安装部署
+# [klkhk]plugin_qiandao_1.12.2 · 安装部署
 
 > 装插件最容易翻车的不是步骤，是版本。先花 30 秒确认下面两行，能省掉后面半小时。
 
@@ -18,7 +18,7 @@ title: 安装部署
 
 ## 二、安装
 
-1. 打开 [Releases](https://github.com/zhaobuobuo114/klkhk-plugin_qiandao/releases/latest)，下载 `klkhk.plugin_qiandao_1.12.2.jar`。
+1. 打开 [Releases](https://github.com/zhaobuobuo114/klkhk-plugin_qiandao/releases/latest)，下载 `[klkhk]plugin_qiandao_1.12.2.jar`。GitHub 会把文件名里的方括号显示成点号（`klkhk.plugin_qiandao_1.12.2.jar`），是同一个文件。
 2. 把 jar 放进服务端根目录的 `plugins/`。在线人数多的话建议停服操作，别热插拔。
 3. 启动服务器。看到这两行，说明插件活过来了：
 
@@ -65,7 +65,7 @@ plugins/QianDao/data.yml      玩家数据（第一个人签到后才有）
 ```text
 服务器根目录/
 ├─ plugins/
-│  ├─ QianDao.jar
+│  ├─ [klkhk]plugin_qiandao_1.12.2.jar
 │  └─ QianDao/
 │     ├─ config.yml      # 奖励、金币、消息、音效
 │     └─ data.yml        # 玩家签到数据（UUID 索引）

@@ -2,7 +2,7 @@
 title: 经济联动
 ---
 
-# QianDao · 经济联动
+# [klkhk]plugin_qiandao_1.12.2 · 经济联动
 
 签到除了发物品，还能直接发**点券或金币**。
 

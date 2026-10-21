@@ -2,7 +2,7 @@
 title: 配置详解
 ---
 
-# QianDao · 配置详解
+# [klkhk]plugin_qiandao_1.12.2 · 配置详解
 
 > 整份配置只有一条铁律：改完执行 `/qd reload`。改坏了也不用慌，删掉 `config.yml` 重启就是默认值。
 

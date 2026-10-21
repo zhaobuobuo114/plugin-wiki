@@ -2,7 +2,7 @@
 title: 更新日志
 ---
 
-# QianDao · 更新日志
+# [klkhk]plugin_qiandao_1.12.2 · 更新日志
 
 ## v1.1.4
 

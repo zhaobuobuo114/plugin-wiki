@@ -27,8 +27,8 @@ export const statusText: Record<Plugin['status'], string> = {
 export const plugins: Plugin[] = [
   {
     id: 'qiantao',
-    name: 'QianDao',
-    fullName: 'QianDao 签到插件',
+    name: '[klkhk]plugin_qiandao_1.12.2',
+    fullName: '[klkhk]plugin_qiandao_1.12.2',
     version: 'v1.1.4',
     mc: '1.12.2',
     status: 'stable',
