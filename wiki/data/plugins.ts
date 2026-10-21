@@ -48,3 +48,11 @@ export const plugins: Plugin[] = [
     ]
   }
 ]
+
+
+// 按插件名首字母 A-Z 排序（忽略名称开头的符号，如 [klkhk] 的方括号）
+const sortKey = (name: string) => name.replace(/^[^a-z0-9]+/i, '').toLowerCase()
+
+export const sortedPlugins = [...plugins].sort((a, b) =>
+  sortKey(a.name).localeCompare(sortKey(b.name), 'en')
+)

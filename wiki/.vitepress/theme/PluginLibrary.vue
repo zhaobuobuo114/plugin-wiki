@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
-import { plugins, statusText } from '../../data/plugins'
+import { plugins, sortedPlugins, statusText } from '../../data/plugins'
 
 const keyword = ref('')
 
 const filtered = computed(() => {
   const q = keyword.value.trim().toLowerCase()
-  if (!q) return plugins
-  return plugins.filter((p) =>
+  if (!q) return sortedPlugins
+  return sortedPlugins.filter((p) =>
     [p.name, p.fullName, p.summary, p.mc, ...p.tags]
       .join(' ')
       .toLowerCase()
@@ -33,7 +33,7 @@ function docLink(link: string) {
       <span class="pl-count">{{ filtered.length }} / {{ plugins.length }}</span>
     </div>
 
-    <article v-for="p in filtered" :key="p.id" class="pl-item">
+    <article v-for="p in filtered" :id="'plugin-' + p.id" :key="p.id" class="pl-item">
       <div class="pl-head">
         <div class="pl-main">
           <h3 class="pl-title">
