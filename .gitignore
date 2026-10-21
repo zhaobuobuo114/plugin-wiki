@@ -25,3 +25,7 @@ logs/
 
 # 本地工作区数据
 .workbuddy/
+
+# VitePress
+node_modules/
+wiki/.vitepress/cache/

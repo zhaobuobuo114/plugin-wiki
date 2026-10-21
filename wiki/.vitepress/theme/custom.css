@@ -1,0 +1,342 @@
+:root {
+  --vp-font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --vp-font-family-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", "Cascadia Code",
+    Consolas, "Liberation Mono", monospace;
+
+  --vp-c-brand-1: #22d3ee;
+  --vp-c-brand-2: #06b6d4;
+  --vp-c-brand-3: #0891b2;
+  --vp-c-brand-soft: rgba(34, 211, 238, 0.14);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(115deg, #22d3ee 15%, #3b82f6 85%);
+  --vp-home-hero-image-background-image: linear-gradient(
+    -45deg,
+    rgba(34, 211, 238, 0.35) 20%,
+    rgba(59, 130, 246, 0.28) 80%
+  );
+  --vp-home-hero-image-filter: blur(72px);
+}
+
+.dark {
+  --vp-c-bg: #0a0e14;
+  --vp-c-bg-alt: #070a0f;
+  --vp-c-bg-soft: #0f1520;
+  --vp-c-bg-elv: #121a26;
+  --vp-c-border: #222c3a;
+  --vp-c-divider: #1a2330;
+  --vp-c-gutter: #1a2330;
+
+  --vp-c-text-1: #e6edf3;
+  --vp-c-text-2: #a7b3c4;
+  --vp-c-text-3: #6f7c8c;
+
+  --vp-c-default-soft: rgba(255, 255, 255, 0.04);
+  --vp-code-block-bg: #070b11;
+  --vp-code-line-highlight-color: rgba(34, 211, 238, 0.08);
+}
+
+/* ---------- top bar / sidebar 细节 ---------- */
+.VPNavBar {
+  backdrop-filter: saturate(160%) blur(12px);
+}
+
+.VPSidebar {
+  background-color: var(--vp-c-bg-alt) !important;
+}
+
+.VPSidebarItem .text {
+  font-size: 14px;
+}
+
+/* ---------- hero ---------- */
+.VPHero .name {
+  letter-spacing: -0.5px;
+}
+
+.VPHero .text {
+  font-size: 40px;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
+
+.VPHero .tagline {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--vp-c-text-2);
+}
+
+.VPButton.brand {
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* ---------- 插件库 ---------- */
+.plugin-lib {
+  margin-top: 10px;
+}
+
+.pl-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 22px;
+}
+
+.pl-filter input {
+  flex: 1;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 9px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  font-family: var(--vp-font-family-base);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.16s ease;
+}
+
+.pl-filter input::placeholder {
+  color: var(--vp-c-text-3);
+}
+
+.pl-filter input:focus {
+  border-color: var(--vp-c-brand-1);
+}
+
+.pl-count {
+  color: var(--vp-c-text-3);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.pl-item {
+  margin-bottom: 16px;
+  padding: 22px;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.022), transparent 60%);
+  transition: border-color 0.16s ease;
+}
+
+.pl-item:hover {
+  border-color: rgba(34, 211, 238, 0.45);
+}
+
+.pl-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.pl-main {
+  min-width: 0;
+}
+
+.pl-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 8px;
+  padding: 0;
+  border: 0;
+  font-size: 20px;
+  font-weight: 650;
+  color: var(--vp-c-text-1);
+}
+
+.pl-ver {
+  font-family: var(--vp-font-family-mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--vp-c-text-3);
+}
+
+.pl-status {
+  padding: 1px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.pl-status.is-stable {
+  color: #67e8f9;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+
+.pl-status.is-beta {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.pl-status.is-wip {
+  color: var(--vp-c-text-3);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--vp-c-border);
+}
+
+.pl-desc {
+  margin: 0 0 12px;
+  max-width: 620px;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--vp-c-text-2);
+}
+
+.pl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.pl-tag {
+  padding: 1px 8px;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--vp-c-text-3);
+  font-size: 11.5px;
+}
+
+.pl-tag.is-mc {
+  color: #7dd3fc;
+  border-color: rgba(125, 211, 252, 0.28);
+}
+
+.pl-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pl-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  background: rgba(34, 211, 238, 0.12);
+  color: #67e8f9;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.pl-btn:hover {
+  background: rgba(34, 211, 238, 0.2);
+  border-color: rgba(34, 211, 238, 0.6);
+  text-decoration: none;
+}
+
+.pl-btn.is-ghost {
+  background: transparent;
+  border-color: var(--vp-c-border);
+  color: var(--vp-c-text-2);
+}
+
+.pl-btn.is-ghost:hover {
+  border-color: var(--vp-c-border);
+  color: var(--vp-c-text-1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pl-docs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.pl-doc {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--vp-c-text-2);
+  font-size: 12.5px;
+}
+
+.pl-doc span {
+  color: var(--vp-c-text-3);
+}
+
+.pl-doc:hover {
+  border-color: rgba(34, 211, 238, 0.5);
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+}
+
+.pl-empty {
+  padding: 28px;
+  border: 1px dashed var(--vp-c-border);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--vp-c-text-3);
+  font-size: 13.5px;
+}
+
+.VPDoc.has-aside .content-container {
+  max-width: 760px !important;
+}
+
+.Layout.wide-page .VPDoc.has-aside .content-container {
+  max-width: 920px !important;
+}
+
+.Layout.wide-page .VPDoc:not(.has-sidebar) .content {
+  max-width: 920px !important;
+}
+
+.Layout.wide-page .VPDoc:not(.has-sidebar) .container {
+  max-width: 1100px !important;
+}
+
+@media (min-width: 960px) {
+  .VPHero .container {
+    justify-content: center;
+  }
+
+  .VPHero .main {
+    max-width: 800px;
+    text-align: center;
+    align-items: center;
+  }
+
+  .VPHero .actions {
+    justify-content: center;
+  }
+
+  .VPHero .tagline {
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .VPHero .text {
+    font-size: 30px;
+  }
+
+  .pl-item {
+    padding: 18px;
+  }
+
+  .pl-head {
+    gap: 14px;
+  }
+
+  .pl-actions {
+    width: 100%;
+  }
+}

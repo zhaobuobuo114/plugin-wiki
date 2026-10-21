@@ -4,11 +4,14 @@ Minecraft 服务端插件的文档总站。**只放文档，不放插件源码**
 
 **在线地址**：<https://zhaobuobuo114.github.io/plugin-wiki/>
 
+基于 [VitePress](https://vitepress.dev/) 构建，深色主题，内置全文搜索（按 `/` 或 `Ctrl+K`）。
+
 ## 这里有什么
 
-- 插件库：所有在维护的插件，含版本、适用服务端、状态与标签
-- 每个插件一套完整文档：安装部署、指令权限、配置详解、经济联动、常见问题、更新日志
-- 全文搜索（按 `/` 或 `Ctrl+K`）、侧边栏导航、深色主题、移动端适配
+- **插件库**：所有在维护的插件，含版本、适用服务端、状态、标签，以及每个插件的完整文档入口
+- **文档页**：安装部署、指令权限、配置详解、经济联动、常见问题、更新日志
+- **全文搜索**：标题、正文、配置项都能搜
+- **插件定制**：接单范围、交付内容与联系方式
 
 当前收录：
 
@@ -19,39 +22,44 @@ Minecraft 服务端插件的文档总站。**只放文档，不放插件源码**
 ## 仓库结构
 
 ```text
-docs-src/                 文档源文件
-├─ site.json              站点配置：插件清单、导航分组
-├─ pages/                 Markdown 页面（每个插件一个目录）
-└─ assets/                CSS / JS / 图标
+wiki/                       VitePress 源文件
+├─ .vitepress/
+│  ├─ config.mts            导航、侧边栏、搜索配置
+│  └─ theme/
+│     ├─ index.ts           注册组件
+│     ├─ custom.css         配色与组件样式（青蓝主题）
+│     └─ PluginLibrary.vue  插件库列表组件
+├─ data/plugins.ts          插件数据源
+├─ index.md                 首页
+├─ plugins.md               插件库
+├─ custom.md                插件定制
+├─ maintain.md              维护指南
+└─ qiantao/                 每个插件一个目录
 
-tools/build_wiki.py       构建脚本：Markdown → docs/
-docs/                     GitHub Pages 发布目录（自动生成，不要手改）
+site/                       构建产物（GitHub Pages 发布目录）
 ```
 
-## 本地构建
-
-需要 Python 3 与 `markdown`：
+## 本地开发
 
 ```bash
-python -m pip install markdown
-python tools/build_wiki.py
-python -m http.server 8000 -d docs
+npm install
+npm run dev       # http://localhost:5173/plugin-wiki/
+npm run build     # 输出到 site/
+npm run preview   # 预览构建结果
 ```
 
-访问 `http://localhost:8000`。搜索与筛选依赖 `fetch`，所以要起本地服务，不能直接双击 HTML。
+## 新增插件
 
-## 新增一个插件
+1. `wiki/<id>/` 下新建 Markdown 页面
+2. 在 `wiki/data/plugins.ts` 的 `plugins` 数组登记（名称、版本、标签、文档链接）
+3. 在 `wiki/.vitepress/config.mts` 的 `sidebar` 加一个 `'/<id>/'` 分组
+4. `npm run build`，提交 `wiki/` 与 `site/`
 
-1. 在 `docs-src/site.json` 的 `plugins` 里登记（名称、版本、适用服务端、简介、标签、文档路径、仓库与下载地址）
-2. 复制 `docs-src/pages/_template/` 到 `docs-src/pages/<id>/`，改内容
-3. 在 `site.json` 的 `groups` 里加一个可折叠分组
-4. `python tools/build_wiki.py`，提交并推送
-
-首页卡片、插件库、导航、搜索索引都会自动更新，不需要手写 HTML。详细字段说明见站内「文档维护指南」。
+详细字段说明见站内「文档维护指南」。
 
 ## 发布
 
-Push 到 `main` 后 GitHub Pages 自动重新构建，约一分钟生效。
+推送到 `main` 后，GitHub Pages 从 `site/` 目录发布，约一分钟生效。
 
 ---
 

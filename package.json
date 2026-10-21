@@ -1,0 +1,13 @@
+{
+  "name": "plugin-wiki",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev wiki",
+    "build": "vitepress build wiki",
+    "preview": "vitepress preview wiki"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}
