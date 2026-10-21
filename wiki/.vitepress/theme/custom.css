@@ -387,48 +387,353 @@
   scroll-margin-top: 96px;
 }
 
-/* ---------- 插件库右侧目录 ---------- */
-.plugin-outline {
-  padding-top: 2px;
-}
 
-.po-title {
+/* ---------- 首页：光晕与入场 ---------- */
+.VPHero {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 12px;
+  min-height: calc(100vh - 64px - 128px);
+  padding-top: 56px;
+  padding-bottom: 72px;
+}
+
+.VPHero .container {
+  width: 100%;
+}
+
+.VPHero::before {
+  content: "";
+  position: absolute;
+  inset: -4% 0 auto;
+  height: 460px;
+  pointer-events: none;
+  background:
+    radial-gradient(420px 220px at 30% 22%, rgba(34, 211, 238, 0.16), transparent 70%),
+    radial-gradient(380px 220px at 70% 8%, rgba(59, 130, 246, 0.14), transparent 70%);
+  filter: blur(12px);
+  animation: aurora 12s ease-in-out infinite alternate;
+}
+
+@keyframes aurora {
+  from { opacity: 0.65; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(16px); }
+}
+
+.VPHero .name,
+.VPHero .text,
+.VPHero .tagline,
+.VPHero .actions {
+  animation: heroIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.VPHero .name { animation-delay: 0.04s; }
+.VPHero .text { animation-delay: 0.12s; }
+.VPHero .tagline { animation-delay: 0.2s; }
+.VPHero .actions { animation-delay: 0.3s; }
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 进入插件库：胶囊按钮 ---------- */
+.VPHero .actions { margin-top: 30px; }
+
+.VPHero .actions .VPButton.brand {
+  position: relative;
+  overflow: hidden;
+  height: 56px;
+  padding: 0 42px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--vp-c-text-1);
+  letter-spacing: 0.5px;
+  background: linear-gradient(115deg, #06b6d4 0%, #0284c7 52%, #2563eb 100%);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.35),
+    0 14px 34px -12px rgba(34, 211, 238, 0.7);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+  animation: ctaPulse 3.4s ease-in-out infinite;
 }
 
-.po-count {
-  font-weight: 400;
-  color: var(--vp-c-text-3);
+.VPHero .actions .VPButton.brand:hover {
+  transform: translateY(-3px) scale(1.035);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.6),
+    0 22px 48px -14px rgba(34, 211, 238, 0.85);
 }
 
-.po-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.VPHero .actions .VPButton.brand::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -60%;
+  width: 36%;
+  height: 140%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-18deg);
+  animation: ctaShine 3.2s ease-in-out infinite;
 }
 
-.po-list a {
-  display: block;
-  padding: 4px 0 4px 12px;
-  border-left: 1px solid var(--vp-c-divider);
-  color: var(--vp-c-text-2);
-  font-size: 13px;
-  line-height: 1.5;
-  transition: color 0.15s ease, border-color 0.15s ease;
+@keyframes ctaShine {
+  0% { left: -60%; }
+  55% { left: 130%; }
+  100% { left: 130%; }
 }
 
-.po-list a:hover {
-  color: var(--vp-c-brand-1);
-  border-left-color: var(--vp-c-brand-1);
-  text-decoration: none;
+@keyframes ctaPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(34, 211, 238, 0.35),
+      0 14px 34px -12px rgba(34, 211, 238, 0.65);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(34, 211, 238, 0.5),
+      0 16px 42px -10px rgba(34, 211, 238, 0.9);
+  }
+}
+
+/* ---------- 插件卡片：悬浮与切换 ---------- */
+.pl-list { position: relative; }
+
+.pl-item {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.pl-item::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.65), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pl-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 211, 238, 0.55);
+  box-shadow: 0 20px 44px -24px rgba(34, 211, 238, 0.5);
+}
+
+.pl-item:hover::before { opacity: 1; }
+
+.pl-move,
+.pl-enter-active,
+.pl-leave-active {
+  transition: all 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pl-enter-from,
+.pl-leave-to {
+  opacity: 0;
+  transform: translateY(16px) scale(0.985);
+}
+
+.pl-leave-active {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+@media (max-width: 640px) {
+  .VPHero .actions .VPButton.brand {
+    height: 50px;
+    padding: 0 30px;
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .VPHero::before,
+  .VPHero .name,
+  .VPHero .text,
+  .VPHero .tagline,
+  .VPHero .actions,
+  .VPHero .actions .VPButton.brand,
+  .VPHero .actions .VPButton.brand::after {
+    animation: none !important;
+  }
+}
+
+/* ---------- 首页开屏铺满 ---------- */
+@media (min-width: 960px) {
+  .VPHome .VPHero {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - var(--vp-nav-height));
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+}
+
+/* ---------- 进入插件库：大号胶囊按钮 ---------- */
+.VPHero .actions {
+  margin-top: 30px;
+}
+
+.VPHero .actions .VPButton.brand {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 58px;
+  padding: 0 44px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: #04121a;
+  background-image: linear-gradient(115deg, #22d3ee, #38bdf8, #3b82f6, #22d3ee);
+  background-size: 300% 300%;
+  box-shadow:
+    0 16px 38px -16px rgba(34, 211, 238, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+  isolation: isolate;
+  animation: heroGradient 7s ease infinite;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease;
+}
+
+.VPHero .actions .VPButton.brand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.5);
+  animation: heroPulse 2.8s ease-out infinite;
+  pointer-events: none;
+}
+
+.VPHero .actions .VPButton.brand::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -60%;
+  width: 42%;
+  height: 140%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  transform: skewX(-18deg);
+  animation: heroShine 4.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.VPHero .actions .VPButton.brand:hover {
+  transform: translateY(-3px) scale(1.045);
+  box-shadow:
+    0 0 0 8px rgba(34, 211, 238, 0.1),
+    0 24px 52px -18px rgba(34, 211, 238, 1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.VPHero .actions .VPButton.brand:active {
+  transform: translateY(0) scale(0.99);
+}
+
+@keyframes heroGradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes heroPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(34, 211, 238, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0);
+  }
+}
+
+@keyframes heroShine {
+  0%,
+  55% {
+    left: -60%;
+  }
+  85%,
+  100% {
+    left: 130%;
+  }
+}
+
+/* ---------- 插件卡片：切换与悬停动效 ---------- */
+.pl-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.pl-move,
+.pl-enter-active,
+.pl-leave-active {
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pl-enter-from {
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+}
+
+.pl-leave-to {
+  opacity: 0;
+  transform: translateY(-12px) scale(0.97);
+}
+
+.pl-leave-active {
+  position: absolute;
+  width: 100%;
 }
 
 .pl-item {
-  scroll-margin-top: 96px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.28s ease,
+    box-shadow 0.28s ease;
+}
+
+.pl-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    520px circle at 50% 0%,
+    rgba(34, 211, 238, 0.1),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.pl-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 211, 238, 0.55);
+  box-shadow: 0 22px 48px -26px rgba(34, 211, 238, 0.6);
+}
+
+.pl-item:hover::after {
+  opacity: 1;
 }

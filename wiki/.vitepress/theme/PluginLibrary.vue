@@ -33,6 +33,7 @@ function docLink(link: string) {
       <span class="pl-count">{{ filtered.length }} / {{ plugins.length }}</span>
     </div>
 
+    <TransitionGroup name="pl" tag="div" class="pl-list">
     <article v-for="p in filtered" :id="'plugin-' + p.id" :key="p.id" class="pl-item">
       <div class="pl-head">
         <div class="pl-main">
@@ -56,17 +57,18 @@ function docLink(link: string) {
         </div>
       </div>
 
-      <div class="pl-docs">
-        <a
-          v-for="d in p.docs"
-          :key="d.link"
-          class="pl-doc"
-          :href="docLink(d.link)"
-        >
-          {{ d.text }}<span aria-hidden="true">→</span>
-        </a>
-      </div>
-    </article>
+        <div class="pl-docs">
+          <a
+            v-for="d in p.docs"
+            :key="d.link"
+            class="pl-doc"
+            :href="docLink(d.link)"
+          >
+            {{ d.text }}<span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+    </TransitionGroup>
 
     <p v-if="!filtered.length" class="pl-empty">没有匹配的插件</p>
   </div>
