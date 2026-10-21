@@ -7,7 +7,7 @@ export default defineConfig({
   base: '/plugin-wiki/',
   cleanUrls: true,
   appearance: 'force-dark',
-  outDir: '../site',
+  outDir: '../docs',
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/plugin-wiki/icon.svg' }],
     ['meta', { name: 'theme-color', content: '#0a0e14' }]

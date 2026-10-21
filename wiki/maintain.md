@@ -26,7 +26,7 @@ wiki/                        VitePress 源文件
    ├─ install.md
    └─ ...
 
-site/                        构建产物（GitHub Pages 发布目录）
+docs/                        构建产物（GitHub Pages 发布目录）
 ```
 
 侧边栏只在插件页面出现，内容是**当前插件**的页面。首页、插件库、定制页没有侧边栏 —— 插件再多，左侧也不会变长。
@@ -128,7 +128,7 @@ npm run preview    # 预览构建结果
 ## 五、常见问题
 
 **改了 Markdown 线上没变？**
-先 `npm run build`，再提交 `site/`。只改 `wiki/` 不构建，线上不会变。
+先 `npm run build`，再提交 `docs/`。只改 `wiki/` 不构建，线上不会变。
 
 **页面 404？**
 检查 `docs` 里的 `link` 是否与实际文件路径一致；`index.md` 对应目录根路径。

@@ -36,7 +36,7 @@ wiki/                       VitePress 源文件
 ├─ maintain.md              维护指南
 └─ qiantao/                 每个插件一个目录
 
-site/                       构建产物（GitHub Pages 发布目录）
+docs/                       构建产物（GitHub Pages 发布目录）
 ```
 
 ## 本地开发
@@ -44,7 +44,7 @@ site/                       构建产物（GitHub Pages 发布目录）
 ```bash
 npm install
 npm run dev       # http://localhost:5173/plugin-wiki/
-npm run build     # 输出到 site/
+npm run build     # 输出到 docs/
 npm run preview   # 预览构建结果
 ```
 
@@ -53,13 +53,13 @@ npm run preview   # 预览构建结果
 1. `wiki/<id>/` 下新建 Markdown 页面
 2. 在 `wiki/data/plugins.ts` 的 `plugins` 数组登记（名称、版本、标签、文档链接）
 3. 在 `wiki/.vitepress/config.mts` 的 `sidebar` 加一个 `'/<id>/'` 分组
-4. `npm run build`，提交 `wiki/` 与 `site/`
+4. `npm run build`，提交 `wiki/` 与 `docs/`
 
 详细字段说明见站内「文档维护指南」。
 
 ## 发布
 
-推送到 `main` 后，GitHub Pages 从 `site/` 目录发布，约一分钟生效。
+推送到 `main` 后，GitHub Pages 从 `docs/` 目录发布，约一分钟生效。
 
 ---
 
